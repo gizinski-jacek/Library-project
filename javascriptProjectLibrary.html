@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Library</title>
+    <meta charset="UTF-8" />
+    <link href="reset.css" rel="stylesheet" type="text/css">
+    <link href="javascriptProjectLibrary.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <form class="newForm">
+        <label for="newTitle">Title:</label>
+        <input type="text" id="newTitle"><br>
+        <label for="newAuthor">Author:</label>
+        <input type="text" id="newAuthor"><br>
+        <label for="newPages">Pages:</label>
+        <input type="text" id="newPages"><br>
+        <label for="newStatus">Status:</label>
+        <input type="radio" name="newStatus" value="true">Finished
+        <input type="radio" name="newStatus" value="false" checked>Reading
+    </form>
+    <button type="submit" class="newBook">Add new book</button>
+    <button type="button" class="btnShowBooks">Show all books</button>
+    <div class="main">
+        <div class="bookcase"></div>
+    </div>
+    <script src="javascriptProjectLibrary.js" type="text/javascript"></script>
+</body>
+</html>
