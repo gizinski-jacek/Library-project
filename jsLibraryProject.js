@@ -1,26 +1,20 @@
 "use strict";
-const buttonNewBook = document.querySelector('.newBook');
+
+const buttonNewBook = document.querySelector('.addBookBtn');
 const buttonShowBooks = document.querySelector('.btnShowBooks');
-const bookcase = document.querySelector('.bookcase');
+const bookcase = document.querySelector('#mainContainer');
 
 buttonNewBook.addEventListener('click', () => {
     addToLibrary();
 })
 
-buttonShowBooks.addEventListener('click', () => {
-    showLibrary();
-})
-
 let myLibrary = [];
-
-function Book(title, author, pages, status) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.status = status;
-    this.info = function() {
-        return this.title + ' written by ' + this.author + ', ' + this.pages + ' pages, ' + 
-        (this.status ? 'finished reading.' : 'still reading.');
+class Book {
+    constructor(author, title, readPages, allPages) {
+        this.author = author;
+        this.title = title;
+        this.readPages = readPages;
+        this.allPages = allPages;
     }
 }
 
@@ -40,28 +34,20 @@ function Book(title, author, pages, status) {
 //     return myLibrary;
 // }
 
-function statusCheck() {
-    let element = document.querySelectorAll('[name=newStatus]');
-    for (let i = 0; i < element.length; i++) {
-        if (element[i].checked) {
-            return (element[i].value == 'true')
-        }
-    }
-}
 
 function addToLibrary() {
-    let title = document.querySelector('#newTitle').value;
-    let author = document.querySelector('#newAuthor').value;
-    let pages = Number(document.querySelector('#newPages').value);
-    let status = statusCheck()
-    if (title == '' && author == '' && pages == '') {
+    let author = document.querySelector('.author').value;
+    let title = document.querySelector('.title').value;
+    let readPages = Number(document.querySelector('.readPages').value);
+    let allPages = Number(document.querySelector('.allPages').value);
+    if (author == '' && title == '' && readPages == '' && allPages == '') {
         alert('All fields are empty!');
     } else {
-        let newBook = new Book(title, author, pages, status);
+        let newBook = new Book(author, title, readPages, allPages);
         myLibrary.push(newBook);
     }
     showLibrary()
-    document.querySelector('.newForm').reset();
+    document.querySelector('.newBookForm').reset();
 }
 
 function removeBook(btnDel) {
@@ -75,54 +61,48 @@ function removeBook(btnDel) {
     })
 }
 
-function statusChange(btnStat) {
-    btnStat.forEach((button) => {
-        button.addEventListener('click', (e) => {
-            if (myLibrary[e.target.parentElement.id].status){
-                myLibrary[e.target.parentElement.id].status = false;
-                e.target.textContent = 'Finished';
-                e.target.style.backgroundColor = 'lime';
-                showLibrary()
-            } else if (!myLibrary[e.target.parentElement.id].status) {
-                myLibrary[e.target.parentElement.id].status = true;
-                e.target.textContent = 'Reading';
-                e.target.style.backgroundColor = 'yellowgreen';
-                showLibrary()
-            }
-        })
-    })
-}
-
 function showLibrary() {
     bookcase.textContent = '';
     let i = 0;
     while (i < myLibrary.length) {
-        let showBook = document.createElement('div');
-        showBook.classList.add('book');
-        showBook.setAttribute('id', i);
-        showBook.textContent = myLibrary[i].info();
+        let form = document.querySelector('.newBookForm');
+        let showBook = form.cloneNode(true);
 
+        showBook.className = 'book';
+        showBook.setAttribute('id', i);
+        showBook.removeChild(showBook.childNodes[7]);
+        showBook.querySelector('.author').value = myLibrary[i].author;
+        showBook.querySelector('.title').value = myLibrary[i].title;
+        showBook.querySelector('.readPages').value = myLibrary[i].readPages;
+        showBook.querySelector('.allPages').value = myLibrary[i].allPages;
+        
         let newDeleteButton = document.createElement('button');
-        newDeleteButton.classList.add('btnDelete');
+        newDeleteButton.className = 'deleteBookBtn';
         newDeleteButton.setAttribute('type', 'button');
-        newDeleteButton.textContent = 'X';
+        newDeleteButton.textContent = 'Delete';
         showBook.appendChild(newDeleteButton);
 
-        let newStatusButton = document.createElement('button');
-        newStatusButton.classList.add('btnStatus');
-        newStatusButton.setAttribute('type', 'button');
-        newStatusButton.textContent = myLibrary[i].status ? 'Finished' : 'Reading';
-        newStatusButton.style.backgroundColor = myLibrary[i].status ? 'lime' : 'yellowgreen';
-        showBook.appendChild(newStatusButton);
+        let updateStatusButton = document.createElement('button');
+        updateStatusButton.classList.add('updateBookBtn');
+        updateStatusButton.setAttribute('type', 'button');
+        updateStatusButton.textContent = 'Update';
+        showBook.appendChild(updateStatusButton);
 
         bookcase.appendChild(showBook);
         i++;
     }
-    let allDeleteButtons = document.querySelectorAll('.btnDelete');
+    let allDeleteButtons = document.querySelectorAll('.deleteBookBtn');
     removeBook(allDeleteButtons);
-    let allStatusButtons = document.querySelectorAll('.btnStatus');
-    statusChange(allStatusButtons);
 }
 
-document.querySelector('.newForm').reset();
+let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+
+myLibrary.push(book1, book2, book3, book4, book5, book6);
+
+document.querySelector('.newBookForm').reset();
 showLibrary();
