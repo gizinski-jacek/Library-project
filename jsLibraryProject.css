@@ -45,17 +45,12 @@ body {
     margin-top: -1px;
 }
 
-.readPages, .allPages, .increment, .decrement, .bar {
+.increment, .decrement, .readPages, .allPages {
     display: flex;
     justify-content: center;
     align-items: center;
     float: left;
     box-sizing: border-box;
-}
-
-.bar {
-    height: 60%;
-    border: 2px solid black;
 }
 
 .decrement, .increment {
@@ -69,6 +64,7 @@ body {
 .decrement {
     left: 0;
     background-color: brown;
+    border-left: 1px solid black;
     border-right: 2px solid black;
 }
 
@@ -76,6 +72,7 @@ body {
     right: 0;
     background-color: green;
     border-left: 2px solid black;
+    border-right: 1px solid black;
 }
 
 .pages {
@@ -86,7 +83,7 @@ body {
 .readPages, .allPages {
     border: none;
     height: 60%;
-    width: 29.3%;
+    width: 30%;
     font-size: 16px;
     text-align: center;
     box-sizing: border-box;
