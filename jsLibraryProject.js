@@ -2,9 +2,8 @@
 
 const mainContainer = document.querySelector('#mainContainer');
 const newBookForm = document.querySelector('.newBookForm');
-const addBookBtn = document.querySelector('.addBookBtn');
 
-addBookBtn.addEventListener('click', (e) => {
+document.querySelector('.addBookBtn').addEventListener('click', (e) => {
     addToLibrary(e.target.parentElement.childNodes);
 })
 
@@ -77,10 +76,10 @@ function showLibrary() {
         mainContainer.insertBefore(showBook, newBookForm);
         i++;
     }
-    let allDeleteButtons = document.querySelectorAll('.deleteBookBtn');
-    removeBook(allDeleteButtons);
-    let allUpdateButtons = document.querySelectorAll('.updateBookBtn');
-    updateBook(allUpdateButtons);
+    removeBook(document.querySelectorAll('.deleteBookBtn'));
+    updateBook(document.querySelectorAll('.updateBookBtn'));
+    decrementBtn(document.querySelectorAll('.decrement'));
+    incrementBtn(document.querySelectorAll('.increment'));
 }
 
 // Check if values provided in the new book form are valid.
@@ -96,6 +95,9 @@ function checkValidValues(a, t, readP, allP) {
         return false;
     } else if (readP > allP) {
         alert('You\'ve read more pages than the book has?');
+        return false;
+    } else if (readP < 0 || allP < 0) {
+        alert('Book has negative number of pages?');
         return false;
     } else {
         return true;
@@ -141,6 +143,50 @@ function updateBook(updateBtn) {
             }
         })
     })
+}
+
+function decrementBtn(decrementBtn) {
+    decrementBtn.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            let nodes = e.target.parentElement.childNodes;
+            if (e.target.classList.contains('read')) {
+                nodes[3].value = decrementValue(nodes[3].value);
+            } else if (e.target.classList.contains('all')) {
+                nodes[9].value = decrementValue(nodes[9].value);
+            }
+        })
+    })
+}
+
+function incrementBtn(incrementBtn) {
+    incrementBtn.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            let nodes = e.target.parentElement.childNodes;
+            if (e.target.classList.contains('read')) {
+                nodes[3].value = incrementValue(nodes[3].value);
+            } else if (e.target.classList.contains('all')) {
+                nodes[9].value = incrementValue(nodes[9].value);
+            }
+        })
+    })
+}
+
+function decrementValue(value) {
+    value = parseInt(value);
+    value = isNaN(value) ? 0 : value;
+    value = (value < 0) ? 0 : value;
+    if (value > 0) {
+        value--;
+    }
+    return value;
+}
+
+function incrementValue(value) {
+    value = parseInt(value);
+    value = isNaN(value) ? 0 : value;
+    value = (value < 0) ? 0 : value;
+    value++;
+    return value;
 }
 
 // Random books for testing purposes.
