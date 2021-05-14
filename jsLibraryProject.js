@@ -2,6 +2,9 @@
 
 const mainContainer = document.querySelector('#mainContainer');
 const newBookForm = document.querySelector('.newBookForm');
+const loadLibrary = document.querySelector('#loadLib');
+const saveLibrary = document.querySelector('#saveLib');
+const wipeLibrary = document.querySelector('#wipeLib');
 
 document.querySelector('.addBookBtn').addEventListener('click', (e) => {
     addToLibrary(e.target.parentElement.childNodes);
@@ -18,21 +21,40 @@ class Book {
     }
 }
 
-// function BookContainer() {
-//     this.ele = document.createElement('div');
-//     this.ele.classList.add('bookContainer');
-//     this.ele.setAttribute('id', "!!NEED ID HERE!!");
+loadLibrary.addEventListener('click', () => {
+    loadLib();
+    clearDisplay();
+    showLibrary();
+})
 
-// }
+saveLibrary.addEventListener('click', saveLib);
+wipeLibrary.addEventListener('click', wipeLib);
 
-// function saveLibrary() {
-//     localStorage.setItem('localLibrary', JSON.stringify(myLibrary));
-// }
+// Load library from local storage. Create new one if it's empty.
+function loadLib() {
+    myLibrary = JSON.parse(localStorage.getItem('localLibrary'));
+    if (myLibrary == null) {
+        alert('No saved library found!');
+        myLibrary = [];
+        saveLib();
+    } else {
+        return myLibrary;
+    }
+}
 
-// function loadLibrary() {
-//     myLibrary = JSON.parse(localStorage.getItem('localLibrary'));
-//     return myLibrary;
-// }
+// Save library to local storage.
+function saveLib() {
+    localStorage.setItem('localLibrary', JSON.stringify(myLibrary));
+}
+
+// Wipe entire local storage and update display.
+function wipeLib() {
+    if (confirm('Are you sure you want to wipe your library? This is irreversible!')) {
+        localStorage.clear();
+        clearDisplay();
+        showLibrary();
+    }
+}
 
 function addToLibrary(form) {
     let author = form[1].value;
@@ -42,9 +64,10 @@ function addToLibrary(form) {
     if (checkValidValues(author, title, readPages, allPages)) {
         let newBook = new Book(author, title, readPages, allPages);
         myLibrary.push(newBook);
-        newBookForm.reset();
+        saveLib();
         clearDisplay();
         showLibrary();
+        newBookForm.reset();
     }
 }
 
@@ -139,6 +162,7 @@ function updateBook(updateBtn) {
                 if (checkValidValues(author, title, readPages, allPages)) {
                     let newBook = new Book(author, title, readPages, allPages)
                     myLibrary.splice(e.target.parentElement.id, 1, newBook)
+                    saveLib();
                 }
             }
         })
@@ -190,14 +214,13 @@ function incrementValue(value) {
 }
 
 // Random books for testing purposes.
-let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-
-myLibrary.push(book1);
+// let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+// myLibrary.push(book1);
 // myLibrary.push(book1, book2, book3, book4, book5, book6);
 
 clearDisplay();
