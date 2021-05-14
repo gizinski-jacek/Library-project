@@ -144,12 +144,12 @@ function updateBook(updateBtn) {
 }
 
 // Random books for testing purposes.
-let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
-let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
+let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
 
 myLibrary.push(book1);
 // myLibrary.push(book1, book2, book3, book4, book5, book6);
