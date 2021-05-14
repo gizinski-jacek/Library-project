@@ -1,6 +1,9 @@
+:root {
+    font-size: 16px;
+}
+
 body * {
     font-family: sans-serif, Arial, Helvetica;
-    font-size: 14px;
 }
 
 body {
@@ -20,14 +23,13 @@ body {
 .author, .title, .pages {
     position: relative;
     width: 100%;
-    font-size: 1.5em;
+    font-size: 1.3rem;
     text-align: center;
-    border: none;
     box-sizing: border-box;
 }
 
 .author {
-    height: 20%;
+    height: 19%;
     width: 100%;
     background-color: rgba(255, 255, 0, 0.6);
     border-top-left-radius: 14px;
@@ -36,12 +38,11 @@ body {
 }
 
 .title { 
-    height: 55%;
+    height: 56%;
     width: 100%;
     background-color: rgba(0, 255, 255, 0.6);
     border-top: 3px solid rgb(0, 0, 0);
     border-bottom: 3px solid rgb(0, 0, 0);
-    margin-top: -1px;
 }
 
 .increment, .decrement, .readPages, .allPages {
@@ -55,7 +56,7 @@ body {
 .decrement, .increment {
     height: 60%;
     width: 10%;
-    font-size: 1em;
+    font-size: 1.2rem;
     color: rgb(0, 0, 0);
     border: none;
 }
@@ -74,14 +75,13 @@ body {
 
 .pages {
     height: 25%;
-    margin-top: -1px;
 }
 
 .readPages, .allPages {
     border: none;
     height: 60%;
     width: 30%;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     text-align: center;
     box-sizing: border-box;
@@ -117,7 +117,7 @@ body {
     left: 0;
     height: 10%;
     width: 100%;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     color: rgb(0, 0, 0);
     background-color: rgba(255, 150, 0, 0.75);
@@ -132,7 +132,7 @@ body {
     bottom: 0;
     height: 30px;
     width: 50%;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     color: rgb(0, 0, 0);
     border-top: 4px solid rgb(0, 0, 0);
@@ -164,5 +164,16 @@ body {
 }
 
 textarea {
+    border: none;
+    outline: none;
     resize: none;
+}
+
+/* Not sure why there's empty space on top of textarea */
+.author, .readPages, .allPages {
+    margin-top: 0;
+}
+
+.title, .pages {
+    margin-top: -1px;
 }
