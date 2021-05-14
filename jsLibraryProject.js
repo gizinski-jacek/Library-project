@@ -115,8 +115,9 @@ function removeBook(deleteBtn) {
         button.addEventListener('click', (e) => {
             if (confirm('Delete this book?')) {
                 myLibrary.splice(e.target.parentElement.id, 1);
-                clearDisplay();
-                showLibrary();
+                e.target.parentElement.remove();
+                // clearDisplay();
+                // showLibrary();
             }
         })
     })
