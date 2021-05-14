@@ -1,14 +1,15 @@
 "use strict";
 
-const buttonNewBook = document.querySelector('.addBookBtn');
-const buttonShowBooks = document.querySelector('.btnShowBooks');
-const bookcase = document.querySelector('#mainContainer');
+const mainContainer = document.querySelector('#mainContainer');
+const newBookForm = document.querySelector('.newBookForm');
+const addBookBtn = document.querySelector('.addBookBtn');
 
-buttonNewBook.addEventListener('click', () => {
-    addToLibrary();
+addBookBtn.addEventListener('click', (e) => {
+    addToLibrary(e.target.parentElement.childNodes);
 })
 
 let myLibrary = [];
+
 class Book {
     constructor(author, title, readPages, allPages) {
         this.author = author;
@@ -34,40 +35,25 @@ class Book {
 //     return myLibrary;
 // }
 
-
-function addToLibrary() {
-    let author = document.querySelector('.author').value;
-    let title = document.querySelector('.title').value;
-    let readPages = Number(document.querySelector('.readPages').value);
-    let allPages = Number(document.querySelector('.allPages').value);
-    if (author == '' && title == '' && readPages == '' && allPages == '') {
-        alert('All fields are empty!');
-    } else {
+function addToLibrary(form) {
+    let author = form[1].value;
+    let title = form[3].value;
+    let readPages = Number(form[5].childNodes[3].value);
+    let allPages = Number(form[5].childNodes[9].value);
+    if (checkValidValues(author, title, readPages, allPages)) {
         let newBook = new Book(author, title, readPages, allPages);
         myLibrary.push(newBook);
+        newBookForm.reset();
+        clearDisplay();
+        showLibrary();
     }
-    showLibrary()
-    document.querySelector('.newBookForm').reset();
 }
 
-function removeBook(btnDel) {
-    btnDel.forEach((button) => {
-        button.addEventListener('click', (e) => {
-            if (confirm('Delete this book?')) {
-                myLibrary.splice(e.target.parentElement.id, 1);
-                showLibrary();
-            }
-        })
-    })
-}
-
+// Display book in the library.
 function showLibrary() {
-    bookcase.textContent = '';
     let i = 0;
     while (i < myLibrary.length) {
-        let form = document.querySelector('.newBookForm');
-        let showBook = form.cloneNode(true);
-
+        let showBook = newBookForm.cloneNode(true);
         showBook.className = 'book';
         showBook.setAttribute('id', i);
         showBook.removeChild(showBook.childNodes[7]);
@@ -79,22 +65,84 @@ function showLibrary() {
         let newDeleteButton = document.createElement('button');
         newDeleteButton.className = 'deleteBookBtn';
         newDeleteButton.setAttribute('type', 'button');
-        newDeleteButton.textContent = 'Delete';
+        newDeleteButton.textContent = 'DELETE';
         showBook.appendChild(newDeleteButton);
 
         let updateStatusButton = document.createElement('button');
         updateStatusButton.classList.add('updateBookBtn');
         updateStatusButton.setAttribute('type', 'button');
-        updateStatusButton.textContent = 'Update';
+        updateStatusButton.textContent = 'UPDATE';
         showBook.appendChild(updateStatusButton);
 
-        bookcase.appendChild(showBook);
+        mainContainer.insertBefore(showBook, newBookForm);
         i++;
     }
     let allDeleteButtons = document.querySelectorAll('.deleteBookBtn');
     removeBook(allDeleteButtons);
+    let allUpdateButtons = document.querySelectorAll('.updateBookBtn');
+    updateBook(allUpdateButtons);
 }
 
+// Check if values provided in the new book form are valid.
+function checkValidValues(a, t, readP, allP) {
+    if (a == '' && t == '' && readP == '' && allP == '') {
+        alert('All fields are empty!');
+        return false;
+    } else if (Number.isNaN(readP) || Number.isNaN(allP)) {
+        alert('Pages are counted in numbers!');
+        return false;
+    } else if (!Number.isInteger(readP) || !Number.isInteger(allP)) {
+        alert('Use whole numbers for page count!');
+        return false;
+    } else if (readP > allP) {
+        alert('You\'ve read more pages than the book has?');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Removes all elements in main container except for new book form.
+function clearDisplay() {
+    while (mainContainer.firstChild.className !== 'newBookForm') {
+        mainContainer.removeChild(mainContainer.firstChild);
+    }
+}
+
+// Removes targeted book from library and updates books displayed.
+function removeBook(deleteBtn) {
+    deleteBtn.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            if (confirm('Delete this book?')) {
+                myLibrary.splice(e.target.parentElement.id, 1);
+                clearDisplay();
+                showLibrary();
+            }
+        })
+    })
+}
+
+// Updates targeted book by grabing values from it's form, creating new book
+// with updated values and splicing it in place of old book.
+function updateBook(updateBtn) {
+    updateBtn.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            if (confirm('Update this book?')) {
+                let form = e.target.parentElement.childNodes;
+                let author = form[1].value;
+                let title = form[3].value;
+                let readPages = Number(form[5].childNodes[3].value);
+                let allPages = Number(form[5].childNodes[9].value);
+                if (checkValidValues(author, title, readPages, allPages)) {
+                    let newBook = new Book(author, title, readPages, allPages)
+                    myLibrary.splice(e.target.parentElement.id, 1, newBook)
+                }
+            }
+        })
+    })
+}
+
+// Random books for testing purposes.
 let book1 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
 let book2 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
 let book3 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
@@ -102,7 +150,9 @@ let book4 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil
 let book5 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
 let book6 = new Book('John Thompson John Thompson', 'Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings Devil of Broken Wings', 42, 155);
 
-myLibrary.push(book1, book2, book3, book4, book5, book6);
+myLibrary.push(book1);
+// myLibrary.push(book1, book2, book3, book4, book5, book6);
 
-document.querySelector('.newBookForm').reset();
+clearDisplay();
 showLibrary();
+newBookForm.reset();
