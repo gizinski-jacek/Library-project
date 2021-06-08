@@ -1,3 +1,5 @@
-2021.04.26  Setup for myLibrary Project.
+# Books library project
 
-2021.05.07  Moving this project to its own repo.
+Creating a library for storing data about users books using basic functions of Javascript classes and local storage.
+
+###### This project is not yet fully finished, it requires some more polish and few simple yet necessary functionalities.
