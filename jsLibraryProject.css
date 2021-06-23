@@ -1,202 +1,228 @@
 :root {
-    font-size: 16px;
+	font-size: 16px;
 }
 
 body * {
-    font-family: sans-serif, Arial, Helvetica;
+	font-family: sans-serif, Arial, Helvetica;
 }
 
 body {
-    width: 100%;
-    background-color: rgba(200, 200, 200, 0.5);
+	width: 100%;
+	background-color: rgba(200, 200, 200, 0.5);
 }
 
 #storage {
-    position: relative;
-    display: flex;
+	position: relative;
+	display: flex;
 }
 
-#loadLib, #saveLib, #wipeLib {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-    width: 220px;
-    margin: 20px 10px 10px 30px;
-    font-size: 1.5em;
-    font-weight: 600;
-    text-align: center;
-    color: rgb(255, 255, 255);
-    background-color: rgb(0, 150, 255);
-    border: 3px solid rgb(0, 0, 0);
-    border-radius: 20px;
-    box-shadow: 0 0 10px black;
+#loadLib,
+#saveLib,
+#wipeLib {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 60px;
+	width: 220px;
+	margin: 20px 10px 10px 30px;
+	font-size: 1.5em;
+	font-weight: 600;
+	text-align: center;
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 150, 255);
+	border: 3px solid rgb(0, 0, 0);
+	border-radius: 20px;
+	box-shadow: 0 0 10px black;
 }
 
-#mainContainer, #storage {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: left;
-    align-items: center;
+#mainContainer,
+#storage {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: left;
+	align-items: center;
 }
 
-.author, .title, .pages {
-    position: relative;
-    width: 100%;
-    font-size: 1.3rem;
-    text-align: center;
-    box-sizing: border-box;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+.author,
+.title,
+.pages {
+	position: relative;
+	width: 100%;
+	font-size: 1.3rem;
+	text-align: center;
+	box-sizing: border-box;
 }
 
 .author {
-    height: 19%;
-    width: 100%;
-    background-color: rgba(255, 255, 0, 0.6);
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-    margin-top: 0;
+	height: 19%;
+	width: 100%;
+	background-color: rgba(255, 255, 0, 0.6);
+	border-top-left-radius: 14px;
+	border-top-right-radius: 14px;
+	margin-top: 0;
 }
 
-.title { 
-    height: 56%;
-    width: 100%;
-    background-color: rgba(0, 255, 255, 0.6);
-    border-top: 3px solid rgb(0, 0, 0);
-    border-bottom: 3px solid rgb(0, 0, 0);
+.title {
+	height: 56%;
+	width: 100%;
+	background-color: rgba(0, 255, 255, 0.6);
+	border-top: 3px solid rgb(0, 0, 0);
+	border-bottom: 3px solid rgb(0, 0, 0);
 }
 
-.increment, .decrement, .readPages, .allPages {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    float: left;
-    box-sizing: border-box;
+.increment,
+.decrement,
+.readPages,
+.allPages {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	float: left;
+	box-sizing: border-box;
 }
 
-.decrement, .increment {
-    height: 60%;
-    width: 10%;
-    font-size: 1.2rem;
-    color: rgb(0, 0, 0);
-    border: none;
+.decrement,
+.increment {
+	height: 60%;
+	width: 10%;
+	font-size: 1.2rem;
+	color: rgb(0, 0, 0);
+	border: none;
 }
 
 .decrement {
-    background-color: rgba(150, 0, 0, 0.8);
-    border-left: 2px solid rgb(0, 0, 0);
-    border-right: 2px solid rgb(0, 0, 0);
+	background-color: rgba(150, 0, 0, 0.8);
+	border-left: 2px solid rgb(0, 0, 0);
+	border-right: 2px solid rgb(0, 0, 0);
 }
 
 .increment {
-    background-color: rgba(0, 125, 0, 0.8);
-    border-left: 2px solid rgb(0, 0, 0);
-    border-right: 2px solid rgb(0, 0, 0);
+	background-color: rgba(0, 125, 0, 0.8);
+	border-left: 2px solid rgb(0, 0, 0);
+	border-right: 2px solid rgb(0, 0, 0);
 }
 
 .pages {
-    height: 25%;
+	height: 25%;
 }
 
-.readPages, .allPages {
-    border: none;
-    height: 60%;
-    width: 30%;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    box-sizing: border-box;
+.readPages,
+.allPages {
+	border: none;
+	height: 60%;
+	width: 30%;
+	font-size: 1rem;
+	font-weight: 600;
+	text-align: center;
+	box-sizing: border-box;
+	outline: none;
 }
 
 .readPages {
-    background-color: rgba(255, 100, 255, 0.75);
+	background-color: rgba(255, 100, 255, 0.75);
 }
 
 .allPages {
-    background-color: rgba(225, 0, 225, 0.75);
+	background-color: rgba(225, 0, 225, 0.75);
 }
 
-.book, .newBookForm {
-    display: flex;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 300px;
-    width: 300px;
-    margin: 20px 40px;
-    background-color: rgb(255, 255, 255);
-    border: 6px solid rgb(0, 0, 0);
-    border-radius: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgb(0, 0, 0);
+.book,
+#newBookForm {
+	display: flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 300px;
+	width: 300px;
+	margin: 20px 40px;
+	background-color: rgb(255, 255, 255);
+	border: 6px solid rgb(0, 0, 0);
+	border-radius: 20px;
+	box-sizing: border-box;
+	box-shadow: 0 0 10px rgb(0, 0, 0);
 }
 
-.addBookBtn {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 10%;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgb(0, 0, 0);
-    background-color: rgba(255, 150, 0, 0.75);
-    border: none;
-    border-top: 4px solid rgb(0, 0, 0);
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
+button[type='submit'] {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 10%;
+	width: 100%;
+	font-size: 1rem;
+	font-weight: 600;
+	color: rgb(0, 0, 0);
+	background-color: rgba(255, 150, 0, 0.75);
+	border: none;
+	border-top: 4px solid rgb(0, 0, 0);
+	border-bottom-left-radius: 14px;
+	border-bottom-right-radius: 14px;
 }
 
-.deleteBookBtn, .updateBookBtn {
-    position: absolute;
-    bottom: 0;
-    height: 30px;
-    width: 50%;
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgb(0, 0, 0);
-    border-top: 4px solid rgb(0, 0, 0);
-    border-bottom: none;
+.deleteBookBtn,
+.updateBookBtn {
+	position: absolute;
+	bottom: 0;
+	height: 30px;
+	width: 50%;
+	font-size: 1rem;
+	font-weight: 600;
+	color: rgb(0, 0, 0);
+	border-top: 4px solid rgb(0, 0, 0);
+	border-bottom: none;
 }
 
 .deleteBookBtn {
-    left: 0;
-    background-color: rgba(255, 0, 0, 0.75);
-    border-left: none;
-    border-right: 2px solid rgb(0, 0, 0);
-    border-bottom-left-radius: 14px;
+	left: 0;
+	background-color: rgba(255, 0, 0, 0.75);
+	border-left: none;
+	border-right: 2px solid rgb(0, 0, 0);
+	border-bottom-left-radius: 14px;
 }
 
 .deleteBookBtn:hover {
-    background-color: rgba(255, 0, 0, 0.85);
+	background-color: rgba(255, 0, 0, 0.85);
 }
 
 .updateBookBtn {
-    right: 0;
-    background-color: rgba(0, 225, 0, 0.75);
-    border-left: 2px solid rgb(0, 0, 0);
-    border-right: none;
-    border-bottom-right-radius: 14px;
+	right: 0;
+	background-color: rgba(0, 225, 0, 0.75);
+	border-left: 2px solid rgb(0, 0, 0);
+	border-right: none;
+	border-bottom-right-radius: 14px;
 }
 
 .updateBookBtn:hover {
-    background-color: rgba(0, 225, 0, 0.95);
+	background-color: rgba(0, 225, 0, 0.95);
 }
 
 textarea {
-    border: none;
-    outline: none;
-    resize: none;
+	border: none;
+	outline: none;
+	resize: none;
 }
 
 /* Not sure why there's empty space on top of textarea */
-.author, .readPages, .allPages {
-    margin-top: 0;
+.author,
+.readPages,
+.allPages {
+	margin-top: 0;
 }
 
-.title, .pages {
-    margin-top: -1px;
+.title,
+.pages {
+	margin-top: -1px;
 }
