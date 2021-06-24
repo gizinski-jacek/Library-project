@@ -5,9 +5,34 @@ const newBookForm = document.getElementById('newBookForm');
 const loadLibrary = document.getElementById('loadLib');
 const saveLibrary = document.getElementById('saveLib');
 const wipeLibrary = document.getElementById('wipeLib');
+const addBookBtn = document.getElementById('addBookBtn');
 
-document.querySelector('button[type=submit]').addEventListener('submit', () => {
-	addToLibrary(newBookForm);
+newBookForm.querySelector('.readPages').addEventListener('input', () => {
+	let rp = newBookForm.querySelector('.readPages');
+	let ap = newBookForm.querySelector('.allPages');
+	if (rp.value > ap.value) {
+		rp.setCustomValidity(
+			"You've read more pages than the book has them in total?"
+		);
+	} else {
+		rp.setCustomValidity('');
+	}
+});
+
+newBookForm.addEventListener('submit', (e) => {
+	let a = newBookForm.querySelector('.author');
+	let t = newBookForm.querySelector('.title');
+	let rp = newBookForm.querySelector('.readPages');
+	let ap = newBookForm.querySelector('.allPages');
+	if (
+		a.validity.valid &&
+		t.validity.valid &&
+		rp.validity.valid &&
+		ap.validity.valid
+	) {
+		addToLibrary(a, t, rp, ap);
+	}
+	e.preventDefault();
 });
 
 let myLibrary = [];
@@ -34,10 +59,15 @@ wipeLibrary.addEventListener('click', wipeLib);
 function loadLib() {
 	myLibrary = JSON.parse(localStorage.getItem('localLibrary'));
 	if (myLibrary == null) {
-		alert('No saved library found!');
 		myLibrary = [];
-		loadRandomLib();
-		saveLib();
+		if (
+			confirm(
+				'No saved library found. Do you want to load example library?'
+			)
+		) {
+			loadRandomLib();
+			saveLib();
+		}
 	} else {
 		return myLibrary;
 	}
@@ -52,24 +82,25 @@ function saveLib() {
 function wipeLib() {
 	if (confirm('Are you sure you want to wipe? This is irreversible!')) {
 		localStorage.clear();
+		myLibrary = [];
 		clearDisplay();
 		showLibrary();
 	}
 }
 
-function addToLibrary(form) {
-	let author = form.querySelector('.author').value;
-	let title = form.querySelector('.title').value;
-	let readPages = Number(form.querySelector('.readPages').value);
-	let allPages = Number(form.querySelector('.allPages').value);
-	if (checkValidValues(author, title, readPages, allPages)) {
-		let newBook = new Book(author, title, readPages, allPages);
-		myLibrary.push(newBook);
-		saveLib();
-		clearDisplay();
-		showLibrary();
-		newBookForm.reset();
-	}
+function addToLibrary(author, title, readPages, allPages) {
+	let newBook = new Book(
+		author.value,
+		title.value,
+		Number(readPages.value),
+		Number(allPages.value)
+	);
+	myLibrary.push(newBook);
+	saveLib();
+	loadLib();
+	clearDisplay();
+	showLibrary();
+	newBookForm.reset();
 }
 
 // Display books in the library.
@@ -107,11 +138,13 @@ function showLibrary() {
 }
 
 // Check if values provided in the new book form are valid.
-function checkValidValues(a, t, readP, allP) {
+function checkValuesValidity(a, t, readP, allP) {
+	readP = Number(readP);
+	allP = Number(allP);
 	if (a == '' && t == '' && readP == '' && allP == '') {
 		alert('All fields are empty!');
 		return false;
-	} else if (Number.isNaN(readP) || Number.isNaN(allP)) {
+	} else if (isNaN(readP) || isNaN(allP)) {
 		alert('Pages are counted in numbers!');
 		return false;
 	} else if (!Number.isInteger(readP) || !Number.isInteger(allP)) {
@@ -136,9 +169,9 @@ function clearDisplay() {
 function removeBook(deleteBtn) {
 	deleteBtn.forEach((button) => {
 		button.addEventListener('click', (e) => {
-			if (confirm('Delete this book?')) {
-				myLibrary.splice(e.target.parentElement.id, 1);
-				e.target.parentElement.remove();
+			if (confirm('Remove this book from display?')) {
+				myLibrary.splice(e.target.closest('form').id, 1);
+				e.target.closest('form').remove();
 			}
 		});
 	});
@@ -149,15 +182,20 @@ function removeBook(deleteBtn) {
 function updateBook(updateBtn) {
 	updateBtn.forEach((button) => {
 		button.addEventListener('click', (e) => {
+			let form = e.target.closest('form');
+			let a = form.querySelector('.author');
+			let t = form.querySelector('.title');
+			let rp = form.querySelector('.readPages');
+			let ap = form.querySelector('.allPages');
 			if (confirm('Update this book?')) {
-				let form = e.target.parentElement.childNodes;
-				let author = form[1].value;
-				let title = form[3].value;
-				let readPages = Number(form[5].childNodes[3].value);
-				let allPages = Number(form[5].childNodes[9].value);
-				if (checkValidValues(author, title, readPages, allPages)) {
-					let newBook = new Book(author, title, readPages, allPages);
-					myLibrary.splice(e.target.parentElement.id, 1, newBook);
+				if (checkValuesValidity(a.value, t.value, rp.value, ap.value)) {
+					let newBook = new Book(
+						a.value,
+						t.value,
+						rp.value,
+						ap.value
+					);
+					myLibrary.splice(form.id, 1, newBook);
 					saveLib();
 				}
 			}
