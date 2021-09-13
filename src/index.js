@@ -1,5 +1,28 @@
 'use strict';
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+	apiKey: 'AIzaSyBdxAR9GbaZB7qRSZyy8NEK0BNfpQTyCMc',
+	authDomain: 'library-project-6bbad.firebaseapp.com',
+	projectId: 'library-project-6bbad',
+	storageBucket: 'library-project-6bbad.appspot.com',
+	messagingSenderId: '879469218195',
+	appId: '1:879469218195:web:68dfc4d8cc1fdfe79f0066',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+//
+
 const mainContainer = document.getElementById('mainContainer');
 const newBookForm = document.getElementById('newBookForm');
 const loadLibrary = document.getElementById('loadLib');
