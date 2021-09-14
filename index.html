@@ -8,12 +8,16 @@
 	</head>
 	<body>
 		<div id="storage">
-			<button type="button" id="loadLib">Load Library</button>
-			<button type="button" id="saveLib">Save Library</button>
-			<button type="button" id="wipeLib">Wipe Library</button>
-			<button type="button" id="loadLib1">Load Library</button>
-			<button type="button" id="saveLib1">Save Library</button>
-			<button type="button" id="wipeLib1">Wipe Library</button>
+			<div class="controls">
+				<button type="button" id="loadLib">Load Library</button>
+				<button type="button" id="saveLib">Save Library</button>
+				<button type="button" id="wipeLib">Wipe Library</button>
+			</div>
+			<div class="userInfo">
+				<img class="userProfilePic" src="" alt="User Profile Picture" hidden/> 
+				<span class="userName" hidden></span><button type="button" id="signIn" >Sign In</button>
+				<button type="button" id="signOut" hidden>Sign Out</button>
+			</div>
 		</div>
 		<div id="mainContainer">
 			<form id="newBookForm">
@@ -55,7 +59,7 @@
 					></input>
 					<button type="button" class="increment all">+</button>
 				</div>
-				<button type="submit" id="addBookBtn" form="newBookForm">ADD NEW BOOK</button>
+				<button type="submit" id="addBookBtn">ADD NEW BOOK</button>
 			</form>
 		</div>
 		<script src="./main.js" type="text/javascript"></script>
