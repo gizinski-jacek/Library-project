@@ -1,13 +1,22 @@
 'use strict';
 
-// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import {
+	getAuth,
+	onAuthStateChanged,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signOut,
+} from 'firebase/auth';
+import {
+	getFirestore,
+	setDoc,
+	doc,
+	getDoc,
+	deleteDoc,
+	serverTimestamp,
+} from 'firebase/firestore';
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
 	apiKey: 'AIzaSyBdxAR9GbaZB7qRSZyy8NEK0BNfpQTyCMc',
 	authDomain: 'library-project-6bbad.firebaseapp.com',
@@ -17,18 +26,138 @@ const firebaseConfig = {
 	appId: '1:879469218195:web:68dfc4d8cc1fdfe79f0066',
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const firebaseDB = getFirestore(firebaseApp);
 
-//
+const signInUser = async () => {
+	let provider = new GoogleAuthProvider();
+	await signInWithPopup(getAuth(), provider);
+	document.getElementById('signIn').setAttribute('hidden', 'true');
+	document.getElementById('signOut').removeAttribute('hidden');
+};
+
+const signOutUser = () => {
+	signOut(getAuth());
+	document.getElementById('signIn').removeAttribute('hidden');
+	document.getElementById('signOut').setAttribute('hidden', 'true');
+};
+
+const getProfilePicUrl = () => {
+	return getAuth().currentUser.photoURL;
+};
+
+const getUserName = () => {
+	return getAuth().currentUser.displayName;
+};
+
+const getUserID = () => {
+	return getAuth().currentUser.uid;
+};
+
+const isUserSignedIn = () => {
+	return !!getAuth().currentUser;
+};
+
+const onDataHandle = (e) => {
+	e.preventDefault();
+	const { id } = e.target;
+	if (isUserSignedIn()) {
+		if (id === 'loadLib') {
+			loadUserData();
+		}
+		if (id === 'saveLib') {
+			saveUserData(myLibrary);
+		}
+		if (id === 'wipeLib') {
+			wipeUserData();
+		}
+	} else {
+		alert('Sign in with your account to use this functionality.');
+	}
+};
+
+const loadUserData = async () => {
+	try {
+		const docData = await getDoc(
+			doc(firebaseDB, 'usersLibraries', getUserName() + getUserID())
+		);
+		if (docData.exists()) {
+			myLibrary = docData.data().lib;
+			clearDisplay();
+			showLibrary();
+		} else {
+			// doc.data() will be undefined in this case
+			console.log('No such document!');
+		}
+	} catch (error) {
+		console.log('Error reading from Firebase Database: ', error);
+	}
+};
+
+const saveUserData = async (data) => {
+	try {
+		await setDoc(
+			doc(firebaseDB, 'usersLibraries', getUserName() + getUserID()),
+			{
+				name: getUserName(),
+				lib: data,
+				timestamp: serverTimestamp(),
+			}
+		);
+	} catch (error) {
+		console.error(
+			'Error writing new message to Firebase Database: ',
+			error
+		);
+	}
+};
+
+const wipeUserData = async () => {
+	if (
+		confirm(
+			'Are you sure you want to wipe all your data? This is irreversible!'
+		)
+	) {
+		try {
+			await deleteDoc(
+				doc(firebaseDB, 'usersLibraries', getUserName() + getUserID())
+			);
+		} catch (error) {
+			console.log('Error deleting from Firebase Database: ', error);
+		}
+	}
+};
+
+const authStateObserver = (user) => {
+	if (user) {
+		document.querySelector('.userProfilePic').src = getProfilePicUrl();
+		document.querySelector('.userName').textContent = getUserName();
+
+		document.querySelector('.userProfilePic').removeAttribute('hidden');
+		document.querySelector('.userName').removeAttribute('hidden');
+		document.querySelector('#signOut').removeAttribute('hidden');
+		document.querySelector('#signIn').setAttribute('hidden', 'true');
+	} else {
+		document
+			.querySelector('.userProfilePic')
+			.setAttribute('hidden', 'true');
+		document.querySelector('.userName').setAttribute('hidden', 'true');
+		document.querySelector('#signIn').removeAttribute('hidden');
+		document.querySelector('#signOut').setAttribute('hidden', 'true');
+	}
+};
+
+const initFirebaseAuth = () => {
+	onAuthStateChanged(getAuth(), authStateObserver);
+};
 
 const mainContainer = document.getElementById('mainContainer');
 const newBookForm = document.getElementById('newBookForm');
 const loadLibrary = document.getElementById('loadLib');
 const saveLibrary = document.getElementById('saveLib');
 const wipeLibrary = document.getElementById('wipeLib');
-const addBookBtn = document.getElementById('addBookBtn');
+const signInBtn = document.getElementById('signIn');
+const signOutBtn = document.getElementById('signOut');
 
 newBookForm.querySelector('.readPages').addEventListener('input', () => {
 	let rp = newBookForm.querySelector('.readPages');
@@ -69,14 +198,23 @@ class Book {
 	}
 }
 
-loadLibrary.addEventListener('click', () => {
-	loadLib();
+loadLibrary.addEventListener('click', (e) => {
+	onDataHandle(e);
 	clearDisplay();
 	showLibrary();
 });
 
-saveLibrary.addEventListener('click', saveLib);
-wipeLibrary.addEventListener('click', wipeLib);
+saveLibrary.addEventListener('click', (e) => {
+	onDataHandle(e);
+	saveLib();
+});
+wipeLibrary.addEventListener('click', (e) => {
+	onDataHandle(e);
+	wipeLib();
+});
+
+signInBtn.addEventListener('click', signInUser);
+signOutBtn.addEventListener('click', signOutUser);
 
 // Load library from local storage. Create new one if it's empty.
 function loadLib() {
@@ -119,6 +257,21 @@ function addToLibrary(author, title, readPages, allPages) {
 		Number(allPages.value)
 	);
 	myLibrary.push(newBook);
+	saveLib();
+	loadLib();
+	clearDisplay();
+	showLibrary();
+	newBookForm.reset();
+}
+
+function updateBookInLibrary(index, author, title, readPages, allPages) {
+	let updatedBook = new Book(
+		author.value,
+		title.value,
+		Number(readPages.value),
+		Number(allPages.value)
+	);
+	myLibrary.splice(index, 1, updatedBook);
 	saveLib();
 	loadLib();
 	clearDisplay();
@@ -205,22 +358,13 @@ function removeBook(deleteBtn) {
 function updateBook(updateBtn) {
 	updateBtn.forEach((button) => {
 		button.addEventListener('click', (e) => {
-			let form = e.target.closest('form');
-			let a = form.querySelector('.author');
-			let t = form.querySelector('.title');
-			let rp = form.querySelector('.readPages');
-			let ap = form.querySelector('.allPages');
 			if (confirm('Update this book?')) {
-				if (checkValuesValidity(a.value, t.value, rp.value, ap.value)) {
-					let newBook = new Book(
-						a.value,
-						t.value,
-						rp.value,
-						ap.value
-					);
-					myLibrary.splice(form.id, 1, newBook);
-					saveLib();
-				}
+				let form = e.target.closest('form');
+				let a = form.querySelector('.author');
+				let t = form.querySelector('.title');
+				let rp = form.querySelector('.readPages');
+				let ap = form.querySelector('.allPages');
+				updateBookInLibrary(form.id, a, t, rp, ap);
 			}
 		});
 	});
@@ -306,3 +450,5 @@ function loadRandomLib() {
 clearDisplay();
 showLibrary();
 newBookForm.reset();
+
+initFirebaseAuth();
