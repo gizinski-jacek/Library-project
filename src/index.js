@@ -90,7 +90,7 @@ const loadUserData = async () => {
 			console.log('No such document!');
 		}
 	} catch (error) {
-		console.log('Error reading from Firebase Database: ', error);
+		console.log('Error reading data from Firebase Database: ', error);
 	}
 };
 
@@ -105,10 +105,7 @@ const saveUserData = async (data) => {
 			}
 		);
 	} catch (error) {
-		console.error(
-			'Error writing new message to Firebase Database: ',
-			error
-		);
+		console.error('Error writing new data to Firebase Database: ', error);
 	}
 };
 
@@ -123,7 +120,7 @@ const wipeUserData = async () => {
 				doc(firebaseDB, 'usersLibraries', getUserName() + getUserID())
 			);
 		} catch (error) {
-			console.log('Error deleting from Firebase Database: ', error);
+			console.log('Error deleting data from Firebase Database: ', error);
 		}
 	}
 };
