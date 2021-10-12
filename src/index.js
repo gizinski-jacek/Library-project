@@ -34,12 +34,14 @@ const signInUser = async () => {
 	await signInWithPopup(getAuth(), provider);
 	document.getElementById('signIn').setAttribute('hidden', 'true');
 	document.getElementById('signOut').removeAttribute('hidden');
+	loadUserData();
 };
 
 const signOutUser = () => {
 	signOut(getAuth());
 	document.getElementById('signIn').removeAttribute('hidden');
 	document.getElementById('signOut').setAttribute('hidden', 'true');
+	clearDisplay();
 };
 
 const getProfilePicUrl = () => {
@@ -79,7 +81,7 @@ const onDataHandle = (e) => {
 const loadUserData = async () => {
 	try {
 		const docData = await getDoc(
-			doc(firebaseDB, 'usersLibraries', getUserName() + getUserID())
+			doc(firebaseDB, 'usersLibraries', getUserID())
 		);
 		if (docData.exists()) {
 			myLibrary = docData.data().lib;
@@ -96,14 +98,11 @@ const loadUserData = async () => {
 
 const saveUserData = async (data) => {
 	try {
-		await setDoc(
-			doc(firebaseDB, 'usersLibraries', getUserName() + getUserID()),
-			{
-				name: getUserName(),
-				lib: data,
-				timestamp: serverTimestamp(),
-			}
-		);
+		await setDoc(doc(firebaseDB, 'usersLibraries', getUserID()), {
+			name: getUserName(),
+			lib: data,
+			timestamp: serverTimestamp(),
+		});
 	} catch (error) {
 		console.error('Error writing new data to Firebase Database: ', error);
 	}
@@ -116,9 +115,7 @@ const wipeUserData = async () => {
 		)
 	) {
 		try {
-			await deleteDoc(
-				doc(firebaseDB, 'usersLibraries', getUserName() + getUserID())
-			);
+			await deleteDoc(doc(firebaseDB, 'usersLibraries', getUserID()));
 		} catch (error) {
 			console.log('Error deleting data from Firebase Database: ', error);
 		}
@@ -197,17 +194,13 @@ class Book {
 
 loadLibrary.addEventListener('click', (e) => {
 	onDataHandle(e);
-	clearDisplay();
-	showLibrary();
 });
 
 saveLibrary.addEventListener('click', (e) => {
 	onDataHandle(e);
-	saveLib();
 });
 wipeLibrary.addEventListener('click', (e) => {
 	onDataHandle(e);
-	wipeLib();
 });
 
 signInBtn.addEventListener('click', signInUser);
