@@ -18,7 +18,7 @@ import {
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyBdxAR9GbaZB7qRSZyy8NEK0BNfpQTyCMc',
+	apiKey: 'AIzaSyB6fdMSJ13X8-le3wAF4YWqJ5Cctm71YqY',
 	authDomain: 'library-project-6bbad.firebaseapp.com',
 	projectId: 'library-project-6bbad',
 	storageBucket: 'library-project-6bbad.appspot.com',
@@ -132,9 +132,7 @@ const authStateObserver = (user) => {
 		document.querySelector('#signOut').removeAttribute('hidden');
 		document.querySelector('#signIn').setAttribute('hidden', 'true');
 	} else {
-		document
-			.querySelector('.userProfilePic')
-			.setAttribute('hidden', 'true');
+		document.querySelector('.userProfilePic').setAttribute('hidden', 'true');
 		document.querySelector('.userName').setAttribute('hidden', 'true');
 		document.querySelector('#signIn').removeAttribute('hidden');
 		document.querySelector('#signOut').setAttribute('hidden', 'true');
@@ -212,9 +210,7 @@ function loadLib() {
 	if (myLibrary == null) {
 		myLibrary = [];
 		if (
-			confirm(
-				'No saved library found. Do you want to load example library?'
-			)
+			confirm('No saved library found. Do you want to load example library?')
 		) {
 			loadRandomLib();
 			saveLib();
