@@ -17,24 +17,31 @@ body {
 	align-items: center;
 	margin-bottom: 12px;
 	background-color: rgba(200, 150, 0, 0.5);
+	border-bottom: 1px solid rgb(0, 0, 0);
 }
 
 .storageControls,
 .userControls {
 	display: flex;
 	align-items: center;
-	padding: 8px 16px;
+	padding: 4px;
+}
+
+button {
+	cursor: pointer;
+}
+
+button:hover {
+	filter: brightness(125%);
 }
 
 .storageControls > button,
 .userControls > button {
 	padding: 8px 12px;
-	margin: 12px;
-	margin-right: 24px;
+	margin: 8px;
 	font-size: 1rem;
 	font-weight: 600;
 	color: rgb(255, 255, 255);
-	background-color: rgb(0, 175, 0);
 	border: 1px solid rgb(0, 0, 0);
 	border-radius: 4px;
 	box-shadow: 0 0 4px rgb(0, 0, 0);
@@ -42,13 +49,21 @@ body {
 }
 
 .storageControls > button {
-	background-color: rgb(0, 125, 255);
+	background-color: rgb(0, 100, 255);
 	border: 2px solid rgb(0, 0, 0);
 	border-radius: 8px;
 }
 
+#signIn {
+	background-color: rgb(0, 150, 0);
+}
+
+#signOut {
+	background-color: rgb(200, 0, 0);
+}
+
 .userControls > * {
-	margin: 12px;
+	margin: 8px;
 }
 
 .userProfilePic {
@@ -172,6 +187,7 @@ input[type='number'] {
 	flex-direction: column;
 	height: 300px;
 	width: 300px;
+	min-width: 300px;
 	margin: 20px 40px;
 	background-color: rgb(255, 255, 255);
 	border: 6px solid rgb(0, 0, 0);
