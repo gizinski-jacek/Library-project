@@ -60,21 +60,35 @@ const isUserSignedIn = () => {
 	return !!getAuth().currentUser;
 };
 
-const onDataHandle = (e) => {
+const onCloudDataHandle = (e) => {
 	e.preventDefault();
 	const { id } = e.target;
 	if (isUserSignedIn()) {
-		if (id === 'loadLib') {
+		if (id === 'loadCloudLibrary') {
 			loadUserData();
 		}
-		if (id === 'saveLib') {
+		if (id === 'saveCloudLibrary') {
 			saveUserData(myLibrary);
 		}
-		if (id === 'wipeLib') {
+		if (id === 'wipeCloudLibrary') {
 			wipeUserData();
 		}
 	} else {
-		alert('Sign in with your account to use this functionality.');
+		alert('Sign in with your Google account to use this functionality.');
+	}
+};
+
+const onLocalDataHandle = (e) => {
+	e.preventDefault();
+	const { id } = e.target;
+	if (id === 'loadLocalLibrary') {
+		loadLibrary();
+	}
+	if (id === 'saveLocalLibrary') {
+		saveLibrary(myLibrary);
+	}
+	if (id === 'wipeLocalLibrary') {
+		wipeLibrary();
 	}
 };
 
@@ -85,7 +99,6 @@ const loadUserData = async () => {
 		);
 		if (docData.exists()) {
 			myLibrary = docData.data().lib;
-			clearDisplay();
 			showLibrary();
 		} else {
 			// doc.data() will be undefined in this case
@@ -97,10 +110,11 @@ const loadUserData = async () => {
 };
 
 const saveUserData = async (data) => {
+	let pureData = data.map((obj) => Object.assign({}, obj));
 	try {
 		await setDoc(doc(firebaseDB, 'usersLibraries', getUserID()), {
 			name: getUserName(),
-			lib: data,
+			lib: pureData,
 			timestamp: serverTimestamp(),
 		});
 	} catch (error) {
@@ -116,6 +130,7 @@ const wipeUserData = async () => {
 	) {
 		try {
 			await deleteDoc(doc(firebaseDB, 'usersLibraries', getUserID()));
+			clearDisplay();
 		} catch (error) {
 			console.log('Error deleting data from Firebase Database: ', error);
 		}
@@ -131,11 +146,19 @@ const authStateObserver = (user) => {
 		document.querySelector('.userName').removeAttribute('hidden');
 		document.querySelector('#signOut').removeAttribute('hidden');
 		document.querySelector('#signIn').setAttribute('hidden', 'true');
+
+		switchLibrary.className = 'cloudStorage';
+		localStorageControls.setAttribute('hidden', 'true');
+		cloudStorageControls.removeAttribute('hidden');
 	} else {
 		document.querySelector('.userProfilePic').setAttribute('hidden', 'true');
 		document.querySelector('.userName').setAttribute('hidden', 'true');
 		document.querySelector('#signIn').removeAttribute('hidden');
 		document.querySelector('#signOut').setAttribute('hidden', 'true');
+
+		switchLibrary.className = 'localStorage';
+		cloudStorageControls.setAttribute('hidden', 'true');
+		localStorageControls.removeAttribute('hidden');
 	}
 };
 
@@ -145,16 +168,25 @@ const initFirebaseAuth = () => {
 
 const mainContainer = document.getElementById('mainContainer');
 const newBookForm = document.getElementById('newBookForm');
-const loadLibrary = document.getElementById('loadLib');
-const saveLibrary = document.getElementById('saveLib');
-const wipeLibrary = document.getElementById('wipeLib');
+const switchLibrary = document.getElementById('switchLibrary');
+
+const localStorageControls = document.getElementById('localStorageControls');
+const loadLocalLibrary = document.getElementById('loadLocalLibrary');
+const saveLocalLibrary = document.getElementById('saveLocalLibrary');
+const wipeLocalLibrary = document.getElementById('wipeLocalLibrary');
+
+const cloudStorageControls = document.getElementById('cloudStorageControls');
+const loadCloudLibrary = document.getElementById('loadCloudLibrary');
+const saveCloudLibrary = document.getElementById('saveCloudLibrary');
+const wipeCloudLibrary = document.getElementById('wipeCloudLibrary');
+
 const signInBtn = document.getElementById('signIn');
 const signOutBtn = document.getElementById('signOut');
 
-newBookForm.querySelector('.readPages').addEventListener('input', () => {
-	let rp = newBookForm.querySelector('.readPages');
-	let ap = newBookForm.querySelector('.allPages');
-	if (rp.value > ap.value) {
+newBookForm.querySelector('#readPages').addEventListener('input', () => {
+	let rp = newBookForm.querySelector('#readPages');
+	let ap = newBookForm.querySelector('#allPages');
+	if (Number(rp.value) > Number(ap.value)) {
 		rp.setCustomValidity(
 			"You've read more pages than the book has them in total?"
 		);
@@ -164,17 +196,17 @@ newBookForm.querySelector('.readPages').addEventListener('input', () => {
 });
 
 newBookForm.addEventListener('submit', (e) => {
-	let a = newBookForm.querySelector('.author');
-	let t = newBookForm.querySelector('.title');
-	let rp = newBookForm.querySelector('.readPages');
-	let ap = newBookForm.querySelector('.allPages');
+	let a = newBookForm.querySelector('#author');
+	let t = newBookForm.querySelector('#title');
+	let rp = newBookForm.querySelector('#readPages');
+	let ap = newBookForm.querySelector('#allPages');
 	if (
 		a.validity.valid &&
 		t.validity.valid &&
 		rp.validity.valid &&
 		ap.validity.valid
 	) {
-		addToLibrary(a, t, rp, ap);
+		addBookToDisplay(a, t, rp, ap);
 	}
 	e.preventDefault();
 });
@@ -190,22 +222,34 @@ class Book {
 	}
 }
 
-loadLibrary.addEventListener('click', (e) => {
-	onDataHandle(e);
+switchLibrary.addEventListener('click', () => {
+	if (cloudStorageControls.hidden) {
+		if (isUserSignedIn()) {
+			switchLibrary.className = 'cloudStorage';
+			localStorageControls.setAttribute('hidden', 'true');
+			cloudStorageControls.removeAttribute('hidden');
+		} else {
+			alert('Sign in with your Google account to use this functionality.');
+		}
+	} else if (localStorageControls.hidden) {
+		switchLibrary.className = 'localStorage';
+		cloudStorageControls.setAttribute('hidden', 'true');
+		localStorageControls.removeAttribute('hidden');
+	}
 });
 
-saveLibrary.addEventListener('click', (e) => {
-	onDataHandle(e);
-});
-wipeLibrary.addEventListener('click', (e) => {
-	onDataHandle(e);
-});
+loadLocalLibrary.addEventListener('click', onLocalDataHandle);
+saveLocalLibrary.addEventListener('click', onLocalDataHandle);
+wipeLocalLibrary.addEventListener('click', onLocalDataHandle);
+loadCloudLibrary.addEventListener('click', onCloudDataHandle);
+saveCloudLibrary.addEventListener('click', onCloudDataHandle);
+wipeCloudLibrary.addEventListener('click', onCloudDataHandle);
 
 signInBtn.addEventListener('click', signInUser);
 signOutBtn.addEventListener('click', signOutUser);
 
 // Load library from local storage. Create new one if it's empty.
-function loadLib() {
+function loadLibrary() {
 	myLibrary = JSON.parse(localStorage.getItem('localLibrary'));
 	if (myLibrary == null) {
 		myLibrary = [];
@@ -213,29 +257,30 @@ function loadLib() {
 			confirm('No saved library found. Do you want to load example library?')
 		) {
 			loadRandomLib();
-			saveLib();
+			saveLibrary();
+			showLibrary();
 		}
 	} else {
-		return myLibrary;
-	}
-}
-
-// Save library to local storage.
-function saveLib() {
-	localStorage.setItem('localLibrary', JSON.stringify(myLibrary));
-}
-
-// Wipe entire local storage and update display.
-function wipeLib() {
-	if (confirm('Are you sure you want to wipe? This is irreversible!')) {
-		localStorage.clear();
-		myLibrary = [];
-		clearDisplay();
+		myLibrary = myLibrary;
 		showLibrary();
 	}
 }
 
-function addToLibrary(author, title, readPages, allPages) {
+// Save library to local storage.
+function saveLibrary() {
+	localStorage.setItem('localLibrary', JSON.stringify(myLibrary));
+}
+
+// Wipe entire local storage and update display.
+function wipeLibrary() {
+	if (confirm('Are you sure you want to wipe? This is irreversible!')) {
+		localStorage.removeItem('localLibrary');
+		myLibrary = [];
+		clearDisplay();
+	}
+}
+
+function addBookToDisplay(author, title, readPages, allPages) {
 	let newBook = new Book(
 		author.value,
 		title.value,
@@ -243,60 +288,65 @@ function addToLibrary(author, title, readPages, allPages) {
 		Number(allPages.value)
 	);
 	myLibrary.push(newBook);
-	saveLib();
-	loadLib();
-	clearDisplay();
 	showLibrary();
 	newBookForm.reset();
 }
 
-function updateBookInLibrary(index, author, title, readPages, allPages) {
+function updateBookDisplay(index, author, title, readPages, allPages) {
 	let updatedBook = new Book(
-		author.value,
-		title.value,
-		Number(readPages.value),
-		Number(allPages.value)
+		author,
+		title,
+		Number(readPages),
+		Number(allPages)
 	);
 	myLibrary.splice(index, 1, updatedBook);
-	saveLib();
-	loadLib();
-	clearDisplay();
 	showLibrary();
 	newBookForm.reset();
 }
 
 // Display books in the library.
 function showLibrary() {
+	clearDisplay();
 	let i = 0;
 	while (i < myLibrary.length) {
 		let showBook = newBookForm.cloneNode(true);
 		showBook.className = 'book';
 		showBook.setAttribute('id', i);
-		showBook.removeChild(showBook.childNodes[7]);
-		showBook.querySelector('.author').value = myLibrary[i].author;
-		showBook.querySelector('.title').value = myLibrary[i].title;
-		showBook.querySelector('.readPages').value = myLibrary[i].readPages;
-		showBook.querySelector('.allPages').value = myLibrary[i].allPages;
+		showBook.querySelector('#author').value = myLibrary[i].author;
+		showBook.querySelector('#title').value = myLibrary[i].title;
+		showBook.querySelector('#readPages').value = myLibrary[i].readPages;
+		showBook.querySelector('#allPages').value = myLibrary[i].allPages;
 
-		let newDeleteButton = document.createElement('button');
-		newDeleteButton.className = 'deleteBookBtn';
-		newDeleteButton.setAttribute('type', 'button');
-		newDeleteButton.textContent = 'DELETE';
-		showBook.appendChild(newDeleteButton);
+		let deleteBookButton = document.createElement('button');
+		deleteBookButton.className = 'deleteBookBtn';
+		deleteBookButton.setAttribute('type', 'button');
+		deleteBookButton.textContent = 'DELETE';
+		showBook.appendChild(deleteBookButton);
 
-		let updateStatusButton = document.createElement('button');
-		updateStatusButton.classList.add('updateBookBtn');
-		updateStatusButton.setAttribute('type', 'button');
-		updateStatusButton.textContent = 'UPDATE';
-		showBook.appendChild(updateStatusButton);
+		let updateBookButton = document.createElement('button');
+		updateBookButton.classList.add('updateBookBtn');
+		updateBookButton.setAttribute('type', 'button');
+		updateBookButton.textContent = 'UPDATE';
+		showBook.appendChild(updateBookButton);
+
+		showBook.querySelector('.bookControls').innerHTML = '';
+		showBook.querySelector('.bookControls').appendChild(deleteBookButton);
+		showBook.querySelector('.bookControls').appendChild(updateBookButton);
 
 		mainContainer.insertBefore(showBook, newBookForm);
 		i++;
 	}
 	removeBook(document.querySelectorAll('.deleteBookBtn'));
 	updateBook(document.querySelectorAll('.updateBookBtn'));
-	decrementBtn(document.querySelectorAll('.decrement'));
-	incrementBtn(document.querySelectorAll('.increment'));
+	newBookForm
+		.querySelector('.pages')
+		.querySelectorAll('button')
+		.forEach((button) => {
+			button.removeEventListener('click', decrementListener);
+			button.removeEventListener('click', incrementListener);
+		});
+	attachListenersToDecrementBtns(document.querySelectorAll('.decrement'));
+	attachListenersToIncrementBtns(document.querySelectorAll('.increment'));
 }
 
 // Check if values provided in the new book form are valid.
@@ -305,6 +355,12 @@ function checkValuesValidity(a, t, readP, allP) {
 	allP = Number(allP);
 	if (a == '' && t == '' && readP == '' && allP == '') {
 		alert('All fields are empty!');
+		return false;
+	} else if (a == '') {
+		alert('Author field is required!');
+		return false;
+	} else if (t == '') {
+		alert('Title field is required!');
 		return false;
 	} else if (isNaN(readP) || isNaN(allP)) {
 		alert('Pages are counted in numbers!');
@@ -344,41 +400,42 @@ function removeBook(deleteBtn) {
 function updateBook(updateBtn) {
 	updateBtn.forEach((button) => {
 		button.addEventListener('click', (e) => {
-			if (confirm('Update this book?')) {
-				let form = e.target.closest('form');
-				let a = form.querySelector('.author');
-				let t = form.querySelector('.title');
-				let rp = form.querySelector('.readPages');
-				let ap = form.querySelector('.allPages');
-				updateBookInLibrary(form.id, a, t, rp, ap);
+			let form = e.target.closest('form');
+			let a = form.querySelector('#author').value;
+			let t = form.querySelector('#title').value;
+			let rp = form.querySelector('#readPages').value;
+			let ap = form.querySelector('#allPages').value;
+			if (checkValuesValidity(a, t, rp, ap)) {
+				if (confirm('Update this book?')) {
+					updateBookDisplay(form.id, a, t, rp, ap);
+				}
 			}
 		});
 	});
 }
 
-function decrementBtn(decrementBtn) {
-	decrementBtn.forEach((button) => {
-		button.addEventListener('click', (e) => {
-			let nodes = e.target.parentElement;
-			if (e.target.classList.contains('read')) {
-				nodes.querySelector('.readPages').value = decrementValue(
-					nodes.querySelector('.readPages').value
-				);
-			} else if (e.target.classList.contains('all')) {
-				if (
-					nodes.querySelector('.readPages').value ==
-					nodes.querySelector('.allPages').value
-				) {
-					nodes.querySelector('.readPages').value = decrementValue(
-						nodes.querySelector('.readPages').value
-					);
-				}
-				nodes.querySelector('.allPages').value = decrementValue(
-					nodes.querySelector('.allPages').value
-				);
-			}
-		});
+function attachListenersToDecrementBtns(allDecrementButtons) {
+	allDecrementButtons.forEach((button) => {
+		button.addEventListener('click', decrementListener);
 	});
+}
+
+function decrementListener(e) {
+	let nodes = e.target.closest('.pages');
+	if (e.target.classList.contains('all')) {
+		if (
+			nodes.querySelector('#readPages').value ==
+			nodes.querySelector('#allPages').value
+		) {
+			let newValue = decrementValue(nodes.querySelector('#readPages').value);
+			nodes.querySelector('#readPages').value = newValue;
+		}
+		let newValue = decrementValue(nodes.querySelector('#allPages').value);
+		nodes.querySelector('#allPages').value = newValue;
+	} else if (e.target.classList.contains('read')) {
+		let newValue = decrementValue(nodes.querySelector('#readPages').value);
+		nodes.querySelector('#readPages').value = newValue;
+	}
 }
 
 function decrementValue(value) {
@@ -391,29 +448,28 @@ function decrementValue(value) {
 	return value;
 }
 
-function incrementBtn(incrementBtn) {
-	incrementBtn.forEach((button) => {
-		button.addEventListener('click', (e) => {
-			let nodes = e.target.parentElement;
-			if (e.target.classList.contains('read')) {
-				if (
-					nodes.querySelector('.readPages').value ==
-					nodes.querySelector('.allPages').value
-				) {
-					nodes.querySelector('.allPages').value = incrementValue(
-						nodes.querySelector('.allPages').value
-					);
-				}
-				nodes.querySelector('.readPages').value = incrementValue(
-					nodes.querySelector('.readPages').value
-				);
-			} else if (e.target.classList.contains('all')) {
-				nodes.querySelector('.allPages').value = incrementValue(
-					nodes.querySelector('.allPages').value
-				);
-			}
-		});
+function attachListenersToIncrementBtns(allIncrementButtons) {
+	allIncrementButtons.forEach((button) => {
+		button.addEventListener('click', incrementListener);
 	});
+}
+
+function incrementListener(e) {
+	let nodes = e.target.closest('.pages');
+	if (e.target.classList.contains('read')) {
+		if (
+			nodes.querySelector('#readPages').value ==
+			nodes.querySelector('#allPages').value
+		) {
+			let newValue = incrementValue(nodes.querySelector('#allPages').value);
+			nodes.querySelector('#allPages').value = newValue;
+		}
+		let newValue = incrementValue(nodes.querySelector('#readPages').value);
+		nodes.querySelector('#readPages').value = newValue;
+	} else if (e.target.classList.contains('all')) {
+		let newValue = incrementValue(nodes.querySelector('#allPages').value);
+		nodes.querySelector('#allPages').value = newValue;
+	}
 }
 
 function incrementValue(value) {
@@ -433,7 +489,6 @@ function loadRandomLib() {
 	myLibrary.push(book1, book2, book3, book4);
 }
 
-clearDisplay();
 showLibrary();
 newBookForm.reset();
 
