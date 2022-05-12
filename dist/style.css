@@ -1,14 +1,28 @@
 :root {
+	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+		'Lucida Sans', Arial, sans-serif;
 	font-size: 16px;
 }
 
-body * {
-	font-family: sans-serif, Arial, Helvetica;
+* {
+	box-sizing: border-box;
+}
+
+button {
+	border: none;
+	cursor: pointer;
+}
+
+button:hover {
+	filter: brightness(110%);
 }
 
 body {
+	min-height: 100vh;
 	width: 100%;
-	background-color: rgba(200, 200, 200, 0.5);
+	background-color: rgba(0, 0, 0, 0.75);
+	display: flex;
+	flex-direction: column;
 }
 
 #navbar {
@@ -16,8 +30,8 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 12px;
-	background-color: rgba(200, 150, 0, 0.5);
-	border-bottom: 1px solid rgb(0, 0, 0);
+	background-color: rgba(175, 175, 175, 0.5);
+	border-bottom: 1px solid rgba(225, 225, 225, 0.5);
 }
 
 .storageControls,
@@ -27,39 +41,54 @@ body {
 	padding: 4px;
 }
 
-button {
-	cursor: pointer;
-}
-
-button:hover {
-	filter: brightness(125%);
-}
-
-.storageControls > button,
-.userControls > button {
-	padding: 8px 12px;
+.storageControls button,
+.userControls button {
+	padding: 4px 8px;
 	margin: 8px;
-	font-size: 1rem;
+	font-size: 0.8rem;
 	font-weight: 600;
 	color: rgb(255, 255, 255);
-	border: 1px solid rgb(0, 0, 0);
 	border-radius: 4px;
-	box-shadow: 0 0 4px rgb(0, 0, 0);
-	cursor: pointer;
+	border: 2px solid rgb(225, 225, 225);
+	box-shadow: 0 0 2px 0 rgb(225, 225, 225);
 }
 
-.storageControls > button {
+.storageControls button {
+	border: 2px solid rgb(225, 225, 225);
 	background-color: rgb(0, 100, 255);
-	border: 2px solid rgb(0, 0, 0);
 	border-radius: 8px;
+	padding: 8px;
 }
 
-#signIn {
+#switchLibrary {
+	width: 180px;
+	margin-right: 32px;
+}
+
+#switchLibrary.localStorage {
+	background-color: rgb(0, 100, 255);
+}
+
+#switchLibrary.localStorage::after {
+	content: 'Switch to Cloud Library';
+}
+
+#switchLibrary.cloudStorage {
 	background-color: rgb(0, 150, 0);
 }
 
-#signOut {
-	background-color: rgb(200, 0, 0);
+#switchLibrary.cloudStorage::after {
+	content: 'Switch to Local Library';
+}
+
+#localStorageControls button {
+	width: 144px;
+	background-color: rgb(0, 150, 0);
+}
+
+#cloudStorageControls button {
+	width: 144px;
+	background-color: rgb(0, 100, 255);
 }
 
 .userControls > * {
@@ -70,19 +99,30 @@ button:hover {
 	height: 36px;
 	width: 36px;
 	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.75);
 }
 
 .userName {
-	font-size: 1.5rem;
+	color: rgb(255, 255, 255);
+	font-weight: 600;
+	font-size: 1.25rem;
+}
+
+#signIn {
+	font-size: 1rem;
+	background-color: rgb(0, 150, 0);
+}
+
+#signOut {
+	font-size: 1rem;
+	background-color: rgb(0, 100, 225);
 }
 
 #mainContainer {
-	position: relative;
+	flex: 1;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: left;
-	align-items: center;
 }
 
 input::-webkit-outer-spin-button,
@@ -95,174 +135,139 @@ input[type='number'] {
 	-moz-appearance: textfield;
 }
 
-.author,
-.title,
-.pages {
-	position: relative;
-	width: 100%;
-	font-size: 1.3rem;
-	text-align: center;
-	box-sizing: border-box;
-}
-
-.author {
-	height: 19%;
-	width: 100%;
-	background-color: rgba(255, 255, 0, 0.6);
-	border-top-left-radius: 14px;
-	border-top-right-radius: 14px;
-	margin-top: 0;
-}
-
-.title {
-	height: 56%;
-	width: 100%;
-	background-color: rgba(0, 255, 255, 0.6);
-	border-top: 3px solid rgb(0, 0, 0);
-	border-bottom: 3px solid rgb(0, 0, 0);
-}
-
-.increment,
-.decrement,
-.readPages,
-.allPages {
+form {
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	float: left;
-	box-sizing: border-box;
+	flex-direction: column;
+	height: fit-content;
+	max-height: 340px;
+	width: 300px;
+	margin: 16px;
+	border-radius: 16px;
+	padding: 4px;
+	background: linear-gradient(
+		rgb(75, 175, 50),
+		rgb(75, 125, 175) 30% 60%,
+		rgb(255, 25, 50)
+	);
+	box-shadow: 0 0 4px 2px rgb(225, 225, 225);
 }
 
-.decrement,
-.increment {
-	height: 60%;
-	width: 10%;
-	font-size: 1.2rem;
-	color: rgb(0, 0, 0);
+form > * {
+	margin: 4px;
+	color: rgb(255, 255, 255);
+}
+
+input,
+textarea {
+	font-size: 1.1rem;
+	padding: 4px;
+	text-align: center;
 	border: none;
+	outline: none;
+	resize: none;
+	overflow: auto;
+	scrollbar-color: rgba(255, 255, 255, 0.75) transparent;
 }
 
-.decrement {
-	background-color: rgba(150, 0, 0, 0.8);
-	border-left: 2px solid rgb(0, 0, 0);
-	border-right: 2px solid rgb(0, 0, 0);
+input:hover,
+input:focus,
+textarea:hover,
+textarea:focus {
+	background-color: rgba(255, 255, 255, 0.25) !important;
+	border-radius: 12px;
 }
 
-.increment {
-	background-color: rgba(0, 125, 0, 0.8);
-	border-left: 2px solid rgb(0, 0, 0);
-	border-right: 2px solid rgb(0, 0, 0);
+#newBookForm * {
+	font-weight: 600;
 }
 
-.pages {
-	height: 25%;
+#author {
+	background: transparent;
 }
 
-.readPages,
-.allPages {
-	border: none;
-	height: 60%;
-	width: 30%;
-	font-size: 1rem;
+#title {
+	background: transparent;
+}
+
+.pages button,
+.bookControls button {
+	padding: 4px 0;
+}
+
+.pages button:hover,
+.bookControls button:hover {
+	background-color: rgba(255, 255, 255, 0.5) !important;
+	border-radius: 16px;
+}
+
+.upper,
+.lower {
+	display: flex;
+}
+
+#readPages,
+#allPages {
+	font-size: 0.8rem;
 	font-weight: 600;
 	text-align: center;
-	box-sizing: border-box;
 	outline: none;
+	max-width: 160px;
 }
 
-.readPages {
-	background-color: rgba(255, 100, 255, 0.75);
+#readPages {
+	background: transparent;
 }
 
-.allPages {
-	background-color: rgba(225, 0, 225, 0.75);
+#allPages {
+	background: transparent;
 }
 
-.book,
-#newBookForm {
+.decrement,
+.increment {
+	flex: 1;
+	font-size: 1.1rem;
+	font-weight: 600;
+	background: transparent;
+}
+
+.bookControls {
 	display: flex;
-	position: relative;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	height: 300px;
-	width: 300px;
-	min-width: 300px;
-	margin: 20px 40px;
-	background-color: rgb(255, 255, 255);
-	border: 6px solid rgb(0, 0, 0);
-	border-radius: 20px;
-	box-sizing: border-box;
-	box-shadow: 0 0 10px rgb(0, 0, 0);
+	margin-top: 8px;
 }
 
 #addBookBtn {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 10%;
-	width: 100%;
-	font-size: 1rem;
-	font-weight: 600;
-	color: rgb(0, 0, 0);
-	background-color: rgba(255, 150, 0, 0.75);
-	border: none;
-	border-top: 4px solid rgb(0, 0, 0);
-	border-bottom-left-radius: 14px;
-	border-bottom-right-radius: 14px;
+	flex: 1;
+	background: transparent;
 }
 
 .deleteBookBtn,
 .updateBookBtn {
-	position: absolute;
-	bottom: 0;
-	height: 30px;
-	width: 50%;
-	font-size: 1rem;
+	flex: 1;
 	font-weight: 600;
-	color: rgb(0, 0, 0);
-	border-top: 4px solid rgb(0, 0, 0);
-	border-bottom: none;
+	background: transparent;
 }
 
-.deleteBookBtn {
-	left: 0;
-	background-color: rgba(255, 0, 0, 0.75);
-	border-left: none;
-	border-right: 2px solid rgb(0, 0, 0);
-	border-bottom-left-radius: 14px;
+.footer {
+	width: 100%;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
-.deleteBookBtn:hover {
-	background-color: rgba(255, 0, 0, 0.85);
+.footer a {
+	font-weight: 600;
+	color: rgb(255, 255, 255);
+	padding: 4px;
+	float: right;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
 }
 
-.updateBookBtn {
-	right: 0;
-	background-color: rgba(0, 225, 0, 0.75);
-	border-left: 2px solid rgb(0, 0, 0);
-	border-right: none;
-	border-bottom-right-radius: 14px;
-}
-
-.updateBookBtn:hover {
-	background-color: rgba(0, 225, 0, 0.95);
-}
-
-textarea {
-	border: none;
-	outline: none;
-	resize: none;
-}
-
-/* Not sure why there's empty space on top of textarea */
-.author,
-.readPages,
-.allPages {
-	margin-top: 0;
-}
-
-.title,
-.pages {
-	margin-top: -1px;
+.footer svg {
+	margin: 0 8px;
+	box-sizing: content-box;
+	border-radius: 50%;
+	padding: 1px;
+	background-color: rgb(255, 255, 255);
+	fill: rgb(0, 0, 0);
 }
