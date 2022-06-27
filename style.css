@@ -177,16 +177,18 @@ textarea:focus {
 	border-radius: 12px;
 }
 
+#author,
+#title {
+	background: transparent;
+}
+
 #newBookForm * {
 	font-weight: 600;
 }
 
-#author {
-	background: transparent;
-}
-
-#title {
-	background: transparent;
+#newBookForm #author,
+#newBookForm #title {
+	-webkit-text-fill-color: rgba(255, 255, 255, 0.75);
 }
 
 .pages button,
@@ -212,14 +214,12 @@ textarea:focus {
 	text-align: center;
 	outline: none;
 	max-width: 160px;
-}
-
-#readPages {
 	background: transparent;
 }
 
-#allPages {
-	background: transparent;
+#newBookForm #readPages,
+#newBookForm #allPages {
+	-webkit-text-fill-color: rgba(255, 255, 255, 0.75);
 }
 
 .decrement,
