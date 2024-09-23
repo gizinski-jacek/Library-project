@@ -262,6 +262,7 @@ textarea:focus {
 }
 
 .footer svg {
+	display: block;
 	box-sizing: content-box;
 	border-radius: 50%;
 	padding: 1px;
