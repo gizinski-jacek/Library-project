@@ -256,13 +256,9 @@ textarea:focus {
 }
 
 .footer a {
-	font-weight: 600;
+	display: block;
 	color: rgb(255, 255, 255);
 	padding: 4px;
-	float: right;
-	display: flex;
-	align-items: center;
-	text-decoration: none;
 }
 
 .footer svg {
